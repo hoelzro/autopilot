@@ -1,0 +1,24 @@
+CFLAGS+=-I ../../include -DCOMPILING_AUTOPILOT=1 -fPIC -Wall -Wimplicit -Wimplicit-function-declaration -Wimplicit-int
+
+DBUS_CFLAGS=$(shell pkg-config dbus-1 --cflags)
+DBUS_LIBS=$(shell pkg-config dbus-1 --libs)
+
+all: dbus.so network-source.so network-source-wicd.so
+
+%.so: %.o
+	gcc -o $@ $< -shared
+
+network-source-wicd.so: network-source-wicd.o
+	gcc -o $@ $< -shared $(DBUS_LIBS)
+
+network-source-wicd.o: network-source-wicd.c
+	gcc -c $(CFLAGS) $^ $(DBUS_CFLAGS)
+
+dbus.so: dbus.o
+	gcc -o $@ $< -shared $(DBUS_LIBS)
+
+dbus.o: dbus.c
+	gcc -c $(CFLAGS) $^ $(DBUS_CFLAGS)
+
+clean:
+	rm -f *.o *.so

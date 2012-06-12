@@ -1,0 +1,14 @@
+CFLAGS+=-I ../include -DCOMPILING_AUTOPILOT=1 -fPIC -Wall -Wimplicit -Wimplicit-function-declaration -Wimplicit-int
+LIBS+=-levent -ldl -llua
+
+all: autopilot all-plugins
+
+autopilot: autopilot.c log.o lua.o events.o config.o plugin.o plugin-handle-unix.o signal.o
+	gcc $(CFLAGS) -o $@ $^ $(LIBS)
+
+all-plugins:
+	make -C plugins/ -f makefile.macosx
+
+clean:
+	rm -f autopilot *.o *.so */*.o */*.so
+	make -C plugins/ -f makefile.macosx clean

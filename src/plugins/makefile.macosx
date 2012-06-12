@@ -1,0 +1,9 @@
+CFLAGS+=-I ../../include -DCOMPILING_AUTOPILOT=1 -fPIC -Wall -Wimplicit -Wimplicit-function-declaration -Wimplicit-int
+
+all: network-source.dylib network-source-osx.dylib
+
+%.dylib: %.o
+	gcc -bundle -undefined dynamic_lookup -o $@ $<
+
+clean:
+	rm -f *.o *.dylib
