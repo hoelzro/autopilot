@@ -15,4 +15,8 @@ int autopilot_lua_absindex(lua_State *L, int index);
 
 int autopilot_lua_push_proxy(lua_State *L);
 
+int autopilot_lua_iterate(lua_State *L);
+
+int autopilot_lua_getfenv_stack(lua_State *L, int stack_level);
+
 #endif

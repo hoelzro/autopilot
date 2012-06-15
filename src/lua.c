@@ -104,3 +104,59 @@ autopilot_lua_push_proxy(lua_State *L)
 
     return 1;
 }
+
+int
+autopilot_lua_iterate(lua_State *L)
+{
+    lua_checkstack(L, lua_gettop(L) + 8);
+
+    /* table callback */
+    lua_insert(L, -2); /* callback table */
+
+    /* XXX we're using pairs for now, since I'll make it respond
+     *     to a metamethod, and I'd have to patch the Lua interpreter
+     *     to do that for lua_next!
+     */
+    lua_getglobal(L, "pairs"); /* callback table pairs */
+    lua_insert(L, -2); /* callback pairs table */
+    lua_call(L, 1, 3); /* callback f s v */
+
+    do {
+        lua_pushvalue(L, -3); /* callback f s v f */
+        lua_pushvalue(L, -3); /* callback f s v f s */
+        lua_pushvalue(L, -3); /* callback f s v f s v */
+
+        lua_call(L, 2, 2); /* callback f s v k v2 */
+
+        if(! lua_isnil(L, -2)) {
+            lua_pushvalue(L, -6); /* callback f s v k v2 callback */
+            lua_pushvalue(L, -3); /* callback f s v k v2 callback k */
+            lua_pushvalue(L, -3); /* callback f s v k v2 callback k v2 */
+            lua_call(L, 2, 0); /* callback f s v k v2 */
+        }
+        lua_pop(L, 1); /* callback f s v k */
+        lua_replace(L, -2); /* callback f s k */
+    } while(! lua_isnil(L, -1));
+    /* callback f s k */
+    lua_pop(L, 4); /* stack is clear */
+
+    return 1;
+}
+
+int autopilot_lua_getfenv_stack(lua_State *L, int stack_level)
+{
+    lua_Debug ar;
+    int status;
+
+    status = lua_getstack(L, stack_level, &ar);
+    if(! status) {
+        return 0;
+    }
+    status = lua_getinfo(L, "f", &ar); /* function at stack_level */
+    if(! status) {
+        return 0;
+    }
+    lua_getfenv(L, -1); /* func env */
+    lua_remove(L, -2); /* env */
+    return 1;
+}
