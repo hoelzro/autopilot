@@ -145,6 +145,7 @@ static void
 init_config_environment(autopilot_context *ap)
 {
     lua_State *L;
+    int status;
 
     L = autopilot_get_lua(ap);
 
@@ -177,6 +178,15 @@ init_config_environment(autopilot_context *ap)
     lua_setfield(L, -2, "__index");
 
     lua_setmetatable(L, -2);
+
+    status = luaL_loadfile(L, "config_environment.lua");
+    if(status) {
+        /* XXX uh-oh, the helper script didn't load */
+        lua_pop(L, 1);
+    } else {
+        lua_pushvalue(L, -2);
+        lua_call(L, 1, 0);
+    }
 
     config_env_ref = luaL_ref(L, LUA_REGISTRYINDEX);
 }
