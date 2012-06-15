@@ -125,7 +125,7 @@ config_env_import(lua_State *L)
 {
     int status;
 
-    lua_getglobal(L, "require"); /* require */
+    lua_pushvalue(L, lua_upvalueindex(1)); /* require */
     lua_pushvalue(L, 1); /* require module-name */
     lua_call(L, 1, 1); /* return value of require(module-name) */
     lua_pushvalue(L, -1); /* retval retval */
@@ -161,7 +161,8 @@ init_config_environment(autopilot_context *ap)
     lua_pushcclosure(L, config_env_load_module, 1);
     lua_setfield(L, -2, "load_module");
 
-    lua_pushcfunction(L, config_env_import);
+    lua_getglobal(L, "require");
+    lua_pushcclosure(L, config_env_import, 1);
     lua_setfield(L, -2, "import");
 
     lua_getglobal(L, "os");
