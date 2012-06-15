@@ -1,6 +1,9 @@
 #include <autopilot/private.h>
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 struct autopilot_system {
     init_function init;
@@ -63,6 +66,13 @@ main(int argc, char **argv)
 {
     autopilot_context ap;
     int status;
+    uid_t me;
+
+    me = getuid();
+    if(me == 0) {
+        fprintf(stderr, "I can't run as root! Sorry!\n");
+        exit(1);
+    }
 
     memset(&ap, 0, sizeof(autopilot_context));
 
