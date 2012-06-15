@@ -128,16 +128,17 @@ config_env_import(lua_State *L)
     lua_getglobal(L, "require"); /* require */
     lua_pushvalue(L, 1); /* require module-name */
     lua_call(L, 1, 1); /* return value of require(module-name) */
+    lua_pushvalue(L, -1); /* retval retval */
 
-    status = autopilot_lua_getfenv_stack(L, 1); /* retval caller-env */
+    status = autopilot_lua_getfenv_stack(L, 1); /* retval retval caller-env */
     if(! status) {
         return luaL_error(L, "Unable to fetch caller's environment");
     }
 
-    lua_pushcclosure(L, import_symbol, 1); /* retval import-symbol */
-    autopilot_lua_iterate(L);
+    lua_pushcclosure(L, import_symbol, 1); /* retval retval import-symbol */
+    autopilot_lua_iterate(L); /* retval */
 
-    return 0;
+    return 1;
 }
 
 static void
