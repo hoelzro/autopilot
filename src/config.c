@@ -3,6 +3,8 @@
 
 #include <errno.h>
 #include <lauxlib.h>
+#include <pwd.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -211,10 +213,28 @@ autopilot_config_load(autopilot_context *ap, const char *filename)
 int
 autopilot_config_init(autopilot_context *ap)
 {
+    struct passwd *pwent = NULL;
+    char *path     = NULL;
     init_config_environment(ap);
 
     autopilot_log_info(ap, "loading configuration...");
-    autopilot_config_load(ap, "config.lua");
+    pwent = getpwuid(getuid());
+    if(! pwent) {
+        autopilot_log_error(ap, "Unable to get passwd entry");
+        return 0;
+    }
+    path = malloc(strlen(pwent->pw_dir) + sizeof("/.config/autopilot/config.lua"));
+    if(! path) {
+        autopilot_log_error(ap, "Unable to allocate memory");
+        return 0;
+    }
+    strcpy(path, pwent->pw_dir);
+    if(path[strlen(path) - 1] == '/') {
+        path[strlen(path) - 1] = '\0';
+    }
+    strcat(path, "/.config/autopilot/config.lua");
+    autopilot_config_load(ap, path);
+    free(path);
     autopilot_log_info(ap, "successfully loaded configuration!");
     return 1;
 }
