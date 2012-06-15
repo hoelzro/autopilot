@@ -3,6 +3,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #define RED     "\e[31m"
 #define GREEN   "\e[32m"
@@ -39,16 +40,25 @@
 #define PREFIX_FORMAT "%-25s %-5s "
 
 #define log_it(level, color)\
-    _log_it(level, color PREFIX_FORMAT, fmt, filename, args);
+    _log_it(level, color, PREFIX_FORMAT, fmt, filename, args);
 
 static void
-_log_it(const char *level, const char *prefix, const char *format, const char *filename, va_list args)
+_log_it(const char *level, const char *color, const char *prefix, const char *format, const char *filename, va_list args)
 {
+    if(isatty(fileno(stdout))) {
+        printf(color);
+    }
     printf(prefix, filename, level);
     vprintf(format, args);
 
+    if(isatty(fileno(stdout))) {
+        printf(RESET);
+    }
     if(format[strlen(format) - 1] != '\n') {
-        printf(RESET "\n");
+        printf("\n");
+    }
+    if(!isatty(fileno(stdout))) {
+        fflush(stdout);
     }
 }
 
