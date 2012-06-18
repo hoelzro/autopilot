@@ -1,3 +1,4 @@
 *.o
 *.so
 src/autopilot
+docs/
