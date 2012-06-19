@@ -1,3 +1,5 @@
+.PHONY: docs
+
 no_target:
 	@echo "Please select a build target: linux macosx docs"
 	@false
