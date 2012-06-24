@@ -23,6 +23,14 @@ autopilot_lua_init(autopilot_context *ap)
 
     luaL_openlibs(ap->L);
 
+    lua_getglobal(ap->L, "package"); /* package */
+    lua_pushliteral(ap->L, PREFIX "/share/autopilot/lib/?.lua"); /* package path1 */
+    lua_pushliteral(ap->L, ";" PREFIX "/share/autopilot/lib/?/init.lua;"); /* package path1 path2 */
+    lua_getfield(ap->L, -3, "path"); /* package path1 path2 package.path */
+    lua_concat(ap->L, 3); /* package newpath */
+    lua_setfield(ap->L, -2, "path"); /* package */
+    lua_pop(ap->L, 1); /* (empty) */
+
     return 1;
 }
 
