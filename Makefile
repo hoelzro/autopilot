@@ -1,15 +1,22 @@
-.PHONY: docs
+.PHONY: docs doxygen luadoc
 
 no_target:
 	@echo "Please select a build target: linux macosx docs"
 	@false
 
-docs:
+docs: doxygen luadoc
+
+doxygen:
 	mkdir -p docs/html
 	mkdir -p docs/man
 	echo "PROJECT_NUMBER = $(git rev-parse --short HEAD)" >> Doxyfile
 	doxygen Doxyfile
 	sed -i -e '/^PROJECT_NUMBER/d' Doxyfile
+
+luadoc:
+	mkdir -p docs/luadoc
+	luadoc -d docs/luadoc docs.lua
+
 linux:
 	make -C src -f makefile.linux
 macosx:
