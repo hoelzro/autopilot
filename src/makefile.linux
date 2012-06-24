@@ -1,5 +1,5 @@
 CFLAGS+=-g -I ../include -DCOMPILING_AUTOPILOT=1 -fPIC -Wall -Wimplicit -Wimplicit-function-declaration -Wimplicit-int
-LIBS+=-levent -ldl -llua
+LIBS+=-levent -ldl -llua -lm
 
 all: autopilot all-plugins
 
