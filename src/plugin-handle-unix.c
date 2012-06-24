@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define PLUGIN_PATH "./plugins/"
+#define PLUGIN_PATH PREFIX "/lib/autopilot/"
 
 plugin_handle
 _load_plugin_handle(autopilot_context *ap, const char *plugin_name)
