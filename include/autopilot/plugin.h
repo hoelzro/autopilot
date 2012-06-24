@@ -5,6 +5,13 @@
 
 /** \defgroup Plugins
  * @{
+ *
+ *  Defines the interface for manipulating plugins.
+ *  Here's an example plugin:
+ *
+ *  \include counter.c
+ */
+
  */
 
 /** \brief A structure representing a plugin.

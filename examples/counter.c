@@ -2,7 +2,8 @@
 #include <event.h>
 #include <stdlib.h>
 
-/* XXX don't do this! */
+/** This is an example plugin. */
+
 static struct event *timer;
 
 struct counter_wrapper {
