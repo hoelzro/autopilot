@@ -32,3 +32,8 @@ on('network/connect', function(network)
 end)
 
 ```
+
+# Documentation
+
+Documentation can be built using `make docs`; Doxygen documentation for the C API is built under `docs/html`, and
+Luadoc documentation for the Lua API is built under `docs/luadoc`.
