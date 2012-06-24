@@ -3,7 +3,7 @@ CFLAGS+=-I ../../include -DCOMPILING_AUTOPILOT=1 -fPIC -Wall -Wimplicit -Wimplic
 DBUS_CFLAGS=$(shell pkg-config dbus-1 --cflags)
 DBUS_LIBS=$(shell pkg-config dbus-1 --libs)
 
-all: dbus.so network-source.so network-source-wicd.so counter.so
+all: dbus.so network-source.so network-source-wicd.so
 
 %.so: %.o
 	gcc -o $@ $< -shared
