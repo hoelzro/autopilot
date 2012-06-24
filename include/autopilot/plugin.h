@@ -12,8 +12,6 @@
  *  \include counter.c
  */
 
- */
-
 /** \brief A structure representing a plugin.
  *
  */
