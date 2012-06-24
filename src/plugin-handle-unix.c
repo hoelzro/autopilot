@@ -10,7 +10,7 @@ plugin_handle
 _load_plugin_handle(autopilot_context *ap, const char *plugin_name)
 {
     /* this has enough space for .dylib as well */
-    char *plugin_path = malloc(strlen(plugin_name) + sizeof("./plugins/.dylib"));
+    char *plugin_path = malloc(strlen(plugin_name) + sizeof(PLUGIN_PATH ".dylib"));
     plugin_handle handle;
 
     sprintf(plugin_path, PLUGIN_PATH "%s.so", plugin_name);
