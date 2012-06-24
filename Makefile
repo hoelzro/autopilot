@@ -1,5 +1,7 @@
 .PHONY: docs doxygen luadoc
 
+ROOT=.
+
 no_target:
 	@echo "Please select a build target: linux macosx docs"
 	@false
