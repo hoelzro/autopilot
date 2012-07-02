@@ -13,6 +13,9 @@ function _M.service(name)
 
   function service:start()
     os.execute {
+      stdout = '/dev/null',
+      stderr = '/dev/null',
+
       'sudo',
       '/etc/rc.d/' .. name,
       'start'
@@ -21,6 +24,9 @@ function _M.service(name)
 
   function service:stop()
     os.execute {
+      stdout = '/dev/null',
+      stderr = '/dev/null',
+
       'sudo',
       '/etc/rc.d/' .. name,
       'stop'
