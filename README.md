@@ -22,7 +22,7 @@ local function athome(network)
   return network.is_wireless and network.ssid == 'MY_SSID'
 end
 
-import 'services'
+import 'service'
 on('network/connect', function(network)
   if athome(network) then
     service 'sshd' 'start'
