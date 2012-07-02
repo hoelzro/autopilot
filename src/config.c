@@ -12,10 +12,55 @@
 /* XXX don't do this! */
 static int config_env_ref;
 
+struct execute_options {
+    FILE *stdout_handle;
+    FILE *stderr_handle;
+};
+
+static void
+process_options(lua_State *L, struct execute_options *options)
+{
+    lua_pushnil(L);
+
+    while(lua_next(L, 1)) {
+        const char *option;
+
+        if(lua_type(L, -2) != LUA_TSTRING) {
+            lua_pop(L, 1);
+            continue;
+        }
+        option = lua_tostring(L, -2);
+        if(! strcmp(option, "stdout")) {
+            if(lua_type(L, -1) == LUA_TSTRING) {
+                options->stdout_handle = fopen(lua_tostring(L, -1), "w");
+            } else {
+                luaL_error(L, "invalid type for stdout option: %s",
+                    lua_typename(L, lua_type(L, -1)));
+            }
+        } else
+        if(! strcmp(option, "stderr")) {
+            if(lua_type(L, -1) == LUA_TSTRING) {
+                options->stderr_handle = fopen(lua_tostring(L, -1), "w");
+            } else {
+                luaL_error(L, "invalid type for stderr option: %s",
+                    lua_typename(L, lua_type(L, -1)));
+            }
+        } else {
+        }
+        lua_pop(L, 1);
+    }
+}
+
 static int
 config_env_os_execute(lua_State *L)
 {
     if(lua_type(L, 1) == LUA_TTABLE) {
+        struct execute_options options;
+
+        memset(&options, 0, sizeof(struct execute_options));
+
+        process_options(L, &options);
+
         pid_t pid;
 
         pid = fork();
@@ -46,6 +91,14 @@ config_env_os_execute(lua_State *L)
                 char **argv;
                 int nargs;
                 int i;
+
+                if(options.stdout_handle) {
+                    dup2(fileno(options.stdout_handle), fileno(stdout));
+                }
+
+                if(options.stderr_handle) {
+                    dup2(fileno(options.stderr_handle), fileno(stderr));
+                }
 
                 nargs = lua_objlen(L, 1);
                 argv  = lua_newuserdata(L, sizeof(char *) * (nargs + 1));
