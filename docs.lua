@@ -13,7 +13,12 @@ end
 
 --- Behaves the exact same as os.execute from stock Lua, except when a table of
 --- arguments is passed, a fork/exec is performed, and the arguments in the table
---- are passed as the arguments to exec.
+--- are passed as the arguments to exec.  If the table contains any string keys, they
+--- are processed as options.  The currently valid options are:
+---
+---  * stdout - The value for this must be a string; it is treated as a filename where
+--              the standard output stream should be directed.
+--   * stderr - Behaves as the stdout option, but for standard error.
 function os.execute(args)
 end
 
