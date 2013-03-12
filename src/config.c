@@ -124,7 +124,7 @@ config_env_os_execute(lua_State *L)
                 argv[nargs] = NULL;
 
                 execvp(argv[0], argv);
-                return 0; /* this should never be reached */
+                exit(255); /* this should never be reached */
             }
         }
     } else {
