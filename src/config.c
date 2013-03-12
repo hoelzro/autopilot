@@ -75,6 +75,14 @@ config_env_os_execute(lua_State *L)
             if(pid) {
                 int status;
 
+                if(options.stdout_handle) {
+                    fclose(options.stdout_handle);
+                }
+
+                if(options.stderr_handle) {
+                    fclose(options.stderr_handle);
+                }
+
                 waitpid(pid, &status, 0);
 
                 if(status) {
